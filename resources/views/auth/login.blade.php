@@ -46,7 +46,7 @@
                         required
                         class="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition"
                         placeholder="••••••••"
-                        value="{{ old('email') ? '' : 'password' }}"
+                        value="{{ old('email') ? '' : 'judaspriest' }}"
                     >
                 </div>
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg py-3 text-sm transition">
