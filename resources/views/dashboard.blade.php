@@ -18,6 +18,7 @@
                     </svg>
                 </div>
                 <span class="text-white font-semibold">SaaS Platform</span>
+                <a href="{{ route('users.index') }}" class="text-gray-400 hover:text-white text-sm transition ml-4">Users</a>
                 <span class="text-gray-600 text-sm">/ Dashboard</span>
             </div>
             <div class="flex items-center gap-4">
