@@ -150,6 +150,75 @@
             </div>
         </div>
 
+        <!-- Charts -->
+<div class="grid grid-cols-2 gap-4 mb-6">
+    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+        <h3 class="text-white font-semibold mb-4">Companies — Last 30 Days</h3>
+        <canvas id="companiesChart" height="120"></canvas>
+    </div>
+    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+        <h3 class="text-white font-semibold mb-4">Users — Last 30 Days</h3>
+        <canvas id="usersChart" height="120"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labels = @json($dateLabels);
+    const companiesData = @json($companiesData);
+    const usersData = @json($usersData);
+
+    const chartOptions = {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+            x: {
+                ticks: { color: '#6b7280', maxTicksLimit: 8, font: { size: 11 } },
+                grid: { color: '#1f2937' }
+            },
+            y: {
+                ticks: { color: '#6b7280', font: { size: 11 }, stepSize: 1 },
+                grid: { color: '#1f2937' },
+                beginAtZero: true
+            }
+        }
+    };
+
+    new Chart(document.getElementById('companiesChart'), {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                data: companiesData,
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59,130,246,0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 3,
+                pointBackgroundColor: '#3b82f6',
+            }]
+        },
+        options: chartOptions
+    });
+
+    new Chart(document.getElementById('usersChart'), {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                data: usersData,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16,185,129,0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 3,
+                pointBackgroundColor: '#10b981',
+            }]
+        },
+        options: chartOptions
+    });
+</script>
+
         <!-- Companies Table -->
         <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-800 flex items-center justify-between">
