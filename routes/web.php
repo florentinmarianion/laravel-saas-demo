@@ -13,6 +13,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\AuditLogController;
+use App\Http\Controllers\ExportController;
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -54,6 +55,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
+
+    // Export
+    Route::get('/export/companies', [ExportController::class, 'companies'])->name('export.companies');
+    Route::get('/export/users', [ExportController::class, 'users'])->name('export.users');
 });
 
 Route::get('/accept-invitation/{token}', [AcceptInvitationController::class, 'show'])
