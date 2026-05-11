@@ -7,6 +7,7 @@ use App\Models\Invitation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Models\AuditLog;
 
 class InvitationController extends Controller
 {
@@ -29,7 +30,11 @@ class InvitationController extends Controller
         );
 
         $invitation->load('company');
-
+        AuditLog::record('invitation.sent', $invitation, [
+            'email' => $invitation->email,
+            'role'  => $invitation->role,
+            'company' => $invitation->company->name,
+        ]);
         Mail::to($invitation->email)->send(new InvitationMail($invitation));
 
         return redirect()->route('dashboard')->with('success', 'Invitation sent to ' . $validated['email']);
@@ -37,6 +42,9 @@ class InvitationController extends Controller
 
     public function destroy(Invitation $invitation)
     {
+        AuditLog::record('invitation.cancelled', $invitation, [
+            'email' => $invitation->email,
+        ]);
         $invitation->delete();
 
         return redirect()->route('dashboard')->with('success', 'Invitation cancelled.');

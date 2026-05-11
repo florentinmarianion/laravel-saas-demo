@@ -19,12 +19,13 @@
                 </div>
                 <span class="text-white font-semibold">SaaS Platform</span>
                 <a href="{{ route('users.index') }}" class="text-gray-400 hover:text-white text-sm transition ml-4">Users</a>
+                <a href="{{ route('audit.index') }}" class="text-gray-400 hover:text-white text-sm transition ml-4">Audit Log</a>
                 <span class="text-gray-600 text-sm">/ Dashboard</span>
             </div>
             <div class="flex items-center gap-4">
                 <a href="{{ route('profile.show') }}" class="text-gray-400 hover:text-white text-sm transition">
-    {{ Auth::user()->name }}
-</a>
+                    {{ Auth::user()->name }}
+                </a>
                 <span class="bg-blue-600/20 text-blue-400 text-xs font-medium px-2 py-1 rounded-full">
                     {{ Auth::user()->getRoleNames()->first() ?? 'user' }}
                 </span>

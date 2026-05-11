@@ -11,7 +11,7 @@ use App\Http\Controllers\CompanyUserController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-
+use App\Http\Controllers\AuditLogController;
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -31,7 +31,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
+    Route::get('/audit', [AuditLogController::class, 'index'])->name('audit.index');
+    
     // Companies
     Route::post('/companies', [CompanyController::class, 'store'])->name('companies.store');
     Route::delete('/companies/{company}', [CompanyController::class, 'destroy'])->name('companies.destroy');

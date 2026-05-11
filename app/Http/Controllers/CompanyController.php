@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-
+use App\Models\AuditLog;
 class CompanyController extends Controller
 {
     public function store(Request $request)
@@ -15,17 +15,19 @@ class CompanyController extends Controller
             'email' => 'required|email|unique:companies,email',
         ]);
 
-        Company::create([
+        $company = Company::create([
             'name'  => $validated['name'],
             'email' => $validated['email'],
             'slug'  => Str::slug($validated['name']),
         ]);
 
+        AuditLog::record('company.created', $company, ['name' => $company->name]);
         return redirect()->route('dashboard')->with('success', 'Company created successfully.');
     }
 
     public function destroy(Company $company)
     {
+        AuditLog::record('company.deleted', $company, ['name' => $company->name]);
         $company->delete();
 
         return redirect()->route('dashboard')->with('success', 'Company deleted successfully.');
@@ -51,6 +53,7 @@ class CompanyController extends Controller
             'is_active' => $request->has('is_active'),
         ]);
 
+        AuditLog::record('company.updated', $company, ['name' => $company->name]);
         return redirect()->route('dashboard')->with('success', 'Company updated successfully.');
     }
 }

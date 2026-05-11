@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\AuditLog;
 
 class UserController extends Controller
 {
@@ -33,12 +34,21 @@ class UserController extends Controller
     {
         $user->update(['is_active' => !$user->is_active]);
 
+        AuditLog::record('user.toggled', $user, [
+            'name'      => $user->name,
+            'is_active' => $user->is_active,
+        ]);
+
         return redirect()->route('users.index')->with('success', 'User status updated.');
         //return redirect()->back()->with('success', 'User status updated.');
     }
 
     public function destroy(User $user)
     {
+        AuditLog::record('user.deleted', $user, [
+            'name'  => $user->name,
+            'email' => $user->email,
+        ]);
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'User deleted.');
