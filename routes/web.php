@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\AcceptInvitationController;
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -14,4 +17,14 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    // Companies
+    Route::post('/companies', [CompanyController::class, 'store'])->name('companies.store');
+    Route::delete('/companies/{company}', [CompanyController::class, 'destroy'])->name('companies.destroy');
+    Route::post('/invitations', [InvitationController::class, 'send'])->name('invitations.send');
 });
+
+Route::get('/accept-invitation/{token}', [AcceptInvitationController::class, 'show'])
+    ->name('invitation.accept.show');
+Route::post('/accept-invitation/{token}', [AcceptInvitationController::class, 'accept'])
+    ->name('invitation.accept');

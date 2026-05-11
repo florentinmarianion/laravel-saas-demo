@@ -35,6 +35,86 @@
 
     <div class="max-w-6xl mx-auto px-6 py-8">
 
+        <!-- Add Company Form -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
+            <h2 class="text-white font-semibold mb-4">Add Company</h2>
+            
+            @if(session('success'))
+                <div class="bg-green-500/10 border border-green-500/20 text-green-400 text-sm rounded-lg p-3 mb-4">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-lg p-3 mb-4">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('companies.store') }}">
+                @csrf
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Company Name</label>
+                        <input type="text" name="name" value="{{ old('name') }}" required
+                            class="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition"
+                            placeholder="Acme Corp">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                        <input type="email" name="email" value="{{ old('email') }}" required
+                            class="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition"
+                            placeholder="contact@acme.com">
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition">
+                        Create Company
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Send Invitation Form -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
+            <h2 class="text-white font-semibold mb-4">Send Invitation</h2>
+
+            <form method="POST" action="{{ route('invitations.send') }}">
+                @csrf
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                        <input type="email" name="email" value="{{ old('email') }}" required
+                            class="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition"
+                            placeholder="user@example.com">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Company</label>
+                        <select name="company_id" required
+                            class="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition">
+                            <option value="">Select company...</option>
+                            @foreach($companies as $company)
+                                <option value="{{ $company->id }}">{{ $company->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Role</label>
+                        <select name="role" required
+                            class="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition">
+                            <option value="member">Member</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="bg-green-600 hover:bg-green-500 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition">
+                        Send Invitation
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <!-- Stats -->
         <div class="grid grid-cols-3 gap-4 mb-8">
             <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
@@ -63,6 +143,7 @@
                         <th class="text-left text-gray-400 text-xs font-medium px-6 py-3">Email</th>
                         <th class="text-left text-gray-400 text-xs font-medium px-6 py-3">Users</th>
                         <th class="text-left text-gray-400 text-xs font-medium px-6 py-3">Status</th>
+                        <th class="text-left text-gray-400 text-xs font-medium px-6 py-3">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -87,6 +168,17 @@
                             @else
                                 <span class="bg-red-500/10 text-red-400 text-xs px-2 py-1 rounded-full">Inactive</span>
                             @endif
+                        </td>
+                        <td class="px-6 py-4">
+                            <form method="POST" action="{{ route('companies.destroy', $company) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    onclick="return confirm('Delete {{ $company->name }}?')"
+                                    class="text-red-400 hover:text-red-300 text-xs transition">
+                                    Delete
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     @empty

@@ -22,9 +22,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Admin only
     Route::middleware(['role:admin'])->group(function () {
-        Route::apiResource('companies', CompanyController::class);
+        Route::apiResource('companies', CompanyController::class)->names([
+            'index'   => 'api.companies.index',
+            'store'   => 'api.companies.store',
+            'show'    => 'api.companies.show',
+            'update'  => 'api.companies.update',
+            'destroy' => 'api.companies.destroy',
+        ]);
         Route::post('/invitations', [InvitationController::class, 'send'])
-            ->name('invitations.send');
+        ->name('api.invitations.send');
     });
 
     // Company members
