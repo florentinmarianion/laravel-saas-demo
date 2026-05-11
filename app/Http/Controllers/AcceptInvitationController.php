@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Invitation;
 use App\Models\User;
+use App\Notifications\InvitationAcceptedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -30,8 +31,8 @@ class AcceptInvitationController extends Controller
         }
 
         $validated = $request->validate([
-            'name'                  => 'required|string|max:255',
-            'password'              => 'required|string|min:8|confirmed',
+            'name'     => 'required|string|max:255',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         $user = User::create([
@@ -44,7 +45,13 @@ class AcceptInvitationController extends Controller
 
         $user->assignRole($invitation->role);
 
+        $invitation->load('company');
         $invitation->update(['accepted_at' => now()]);
+
+        $admins = User::role('admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new InvitationAcceptedNotification($invitation));
+        }
 
         Auth::login($user);
 
