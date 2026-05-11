@@ -17,8 +17,9 @@ class DashboardController extends Controller
             'invitations' => Invitation::whereNull('accepted_at')->count(),
         ];
 
-        $companies = Company::with('users')->latest()->take(5)->get();
+        $companies   = Company::with('users')->latest()->get();
+        $invitations = Invitation::with('company')->latest()->get();
 
-        return view('dashboard', compact('stats', 'companies'));
+        return view('dashboard', compact('stats', 'companies', 'invitations'));
     }
 }

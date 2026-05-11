@@ -161,7 +161,12 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 text-gray-400 text-sm">{{ $company->email }}</td>
-                        <td class="px-6 py-4 text-gray-400 text-sm">{{ $company->users->count() }}</td>
+                        <td class="px-6 py-4 text-gray-400 text-sm">
+                            <a href="{{ route('companies.users', $company) }}" 
+                            class="text-blue-400 hover:text-blue-300 transition">
+                                {{ $company->users->count() }} users
+                            </a>
+                        </td>
                         <td class="px-6 py-4">
                             @if($company->is_active)
                                 <span class="bg-green-500/10 text-green-400 text-xs px-2 py-1 rounded-full">Active</span>
@@ -170,20 +175,85 @@
                             @endif
                         </td>
                         <td class="px-6 py-4">
-                            <form method="POST" action="{{ route('companies.destroy', $company) }}">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    onclick="return confirm('Delete {{ $company->name }}?')"
-                                    class="text-red-400 hover:text-red-300 text-xs transition">
-                                    Delete
-                                </button>
-                            </form>
+                            <div class="flex items-center gap-3">
+                                <a href="{{ route('companies.edit', $company) }}"
+                                    class="text-blue-400 hover:text-blue-300 text-xs transition">
+                                    Edit
+                                </a>
+                                <form method="POST" action="{{ route('companies.destroy', $company) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        onclick="return confirm('Delete {{ $company->name }}?')"
+                                        class="text-red-400 hover:text-red-300 text-xs transition">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
                         <td colspan="4" class="px-6 py-8 text-center text-gray-500 text-sm">No companies found.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Invitations Table -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden mt-6">
+            <div class="px-6 py-4 border-b border-gray-800">
+                <h2 class="text-white font-semibold">Invitations</h2>
+            </div>
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-gray-800">
+                        <th class="text-left text-gray-400 text-xs font-medium px-6 py-3">Email</th>
+                        <th class="text-left text-gray-400 text-xs font-medium px-6 py-3">Company</th>
+                        <th class="text-left text-gray-400 text-xs font-medium px-6 py-3">Role</th>
+                        <th class="text-left text-gray-400 text-xs font-medium px-6 py-3">Expires</th>
+                        <th class="text-left text-gray-400 text-xs font-medium px-6 py-3">Status</th>
+                        <th class="text-left text-gray-400 text-xs font-medium px-6 py-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($invitations as $invitation)
+                    <tr class="border-b border-gray-800/50 hover:bg-gray-800/30 transition">
+                        <td class="px-6 py-4 text-white text-sm">{{ $invitation->email }}</td>
+                        <td class="px-6 py-4 text-gray-400 text-sm">{{ $invitation->company->name }}</td>
+                        <td class="px-6 py-4">
+                            <span class="bg-blue-600/20 text-blue-400 text-xs px-2 py-1 rounded-full">
+                                {{ $invitation->role }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-400 text-sm">{{ $invitation->expires_at->format('M d, Y') }}</td>
+                        <td class="px-6 py-4">
+                            @if($invitation->accepted_at)
+                                <span class="bg-green-500/10 text-green-400 text-xs px-2 py-1 rounded-full">Accepted</span>
+                            @elseif($invitation->expires_at->isPast())
+                                <span class="bg-red-500/10 text-red-400 text-xs px-2 py-1 rounded-full">Expired</span>
+                            @else
+                                <span class="bg-yellow-500/10 text-yellow-400 text-xs px-2 py-1 rounded-full">Pending</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4">
+                            @if($invitation->isPending())
+                            <form method="POST" action="{{ route('invitations.destroy', $invitation) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    onclick="return confirm('Cancel this invitation?')"
+                                    class="text-red-400 hover:text-red-300 text-xs transition">
+                                    Cancel
+                                </button>
+                            </form>
+                            @endif
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-gray-500 text-sm">No invitations found.</td>
                     </tr>
                     @endforelse
                 </tbody>

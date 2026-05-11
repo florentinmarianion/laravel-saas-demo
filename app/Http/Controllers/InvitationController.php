@@ -34,4 +34,11 @@ class InvitationController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'Invitation sent to ' . $validated['email']);
     }
+
+    public function destroy(Invitation $invitation)
+    {
+        $invitation->delete();
+
+        return redirect()->route('dashboard')->with('success', 'Invitation cancelled.');
+    }
 }
