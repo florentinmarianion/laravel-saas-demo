@@ -32,21 +32,26 @@
                     <input
                         type="email"
                         name="email"
-                        value="{{ old('email') ? old('email') : 'admin@demo.com' }}"
+                        value="{{ old('email') ? old('email') : 'florentin.marian.ion@gmail.com' }}"
                         required
                         class="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition"
                         placeholder="admin@demo.com"
                     >
                 </div>
                 <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-sm font-medium text-gray-300">Password</label>
+                        <a href="{{ route('password.request') }}" class="text-blue-400 hover:text-blue-300 text-xs transition">
+                            Forgot password?
+                        </a>
+                    </div>
                     <input
                         type="password"
                         name="password"
                         required
                         class="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition"
                         placeholder="••••••••"
-                        value="{{ old('email') ? '' : 'judaspriest' }}"
+                        value="{{ old('email') ? '' : 'Lagrange2090' }}"
                     >
                 </div>
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg py-3 text-sm transition">
