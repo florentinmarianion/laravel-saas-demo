@@ -43,11 +43,18 @@ class AcceptInvitationController extends Controller
             'is_active'  => true,
         ]);
 
+        // Assign role from invitation
         $user->assignRole($invitation->role);
+
+        // Assign permissions from invitation if any were selected
+        if (!empty($invitation->permissions)) {
+            $user->givePermissionTo($invitation->permissions);
+        }
 
         $invitation->load('company');
         $invitation->update(['accepted_at' => now()]);
 
+        // Notify all admins
         $admins = User::role('admin')->get();
         foreach ($admins as $admin) {
             $admin->notify(new InvitationAcceptedNotification($invitation));

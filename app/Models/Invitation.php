@@ -12,6 +12,7 @@ class Invitation extends Model
         'email',
         'token',
         'role',
+        'permissions',
         'expires_at',
         'accepted_at',
     ];
@@ -19,6 +20,7 @@ class Invitation extends Model
     protected $casts = [
         'expires_at'  => 'datetime',
         'accepted_at' => 'datetime',
+        'permissions' => 'array',
     ];
 
     public function company(): BelongsTo

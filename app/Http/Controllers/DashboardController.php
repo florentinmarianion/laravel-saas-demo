@@ -6,9 +6,11 @@ use App\Models\Company;
 use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
 
 class DashboardController extends Controller
 {
+
     public function index()
     {
         $stats = [
@@ -17,10 +19,11 @@ class DashboardController extends Controller
             'invitations' => Invitation::whereNull('accepted_at')->count(),
         ];
 
-        $companies   = Company::with('users')->latest()->get();
-        $invitations = Invitation::with('company')->latest()->get();
+        $companies      = Company::with('users')->latest()->get();
+        $invitations    = Invitation::with('company')->latest()->get();
+        $allPermissions = Permission::orderBy('name')->get();
 
-        // Chart data - last 30 days
+        // Chart data
         $companiesChart = Company::select(
                 DB::raw('DATE(created_at) as date'),
                 DB::raw('COUNT(*) as count')
@@ -39,7 +42,6 @@ class DashboardController extends Controller
             ->orderBy('date')
             ->pluck('count', 'date');
 
-        // Fill missing dates with 0
         $dates = collect();
         for ($i = 29; $i >= 0; $i--) {
             $dates->push(now()->subDays($i)->format('Y-m-d'));
@@ -49,8 +51,12 @@ class DashboardController extends Controller
         $usersData     = $dates->map(fn($date) => $usersChart[$date] ?? 0);
         $dateLabels    = $dates->map(fn($date) => date('M d', strtotime($date)));
 
+        $users = auth()->user()->hasRole('admin') 
+        ? collect() 
+        : User::with('roles')->where('company_id', auth()->user()->company_id)->get();
+
         return view('dashboard', compact(
-            'stats', 'companies', 'invitations',
+            'stats', 'companies', 'invitations', 'allPermissions', 'users',
             'companiesData', 'usersData', 'dateLabels'
         ));
     }

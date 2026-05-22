@@ -12,23 +12,38 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Permissions
+        // Granular CRUD permissions
         $permissions = [
-            'manage-companies',
-            'manage-users',
-            'send-invitations',
-            'view-invitations',
+            // Companies
+            'companies.create',
+            'companies.read',
+            'companies.update',
+            'companies.delete',
+
+            // Users
+            'users.create',
+            'users.read',
+            'users.update',
+            'users.delete',
+
+            // Invitations
+            'invitations.create',
+            'invitations.delete',
+
+            // Audit
+            'audit.read',
+
+            // Currency Exchange
+            'currency.view',
+            'currency.export',
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // Roles
-        Role::create(['name' => 'admin'])
-            ->givePermissionTo($permissions);
-
-        Role::create(['name' => 'member'])
-            ->givePermissionTo(['view-invitations']);
+        // Create roles
+        Role::firstOrCreate(['name' => 'admin']);
+        Role::firstOrCreate(['name' => 'member']);
     }
 }

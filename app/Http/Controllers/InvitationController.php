@@ -22,10 +22,11 @@ class InvitationController extends Controller
         $invitation = Invitation::updateOrCreate(
             ['company_id' => $validated['company_id'], 'email' => $validated['email']],
             [
-                'role'       => $validated['role'],
-                'token'      => Str::random(64),
-                'expires_at' => now()->addDays(7),
+                'role'        => $validated['role'],
+                'token'       => Str::random(64),
+                'expires_at'  => now()->addDays(7),
                 'accepted_at' => null,
+                'permissions' => $request->input('permissions', []),
             ]
         );
 
