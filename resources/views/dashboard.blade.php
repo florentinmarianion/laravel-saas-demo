@@ -20,6 +20,7 @@
                 <span class="text-gray-600 text-sm">/ Dashboard</span>
                 @role('admin')
                     <a href="{{ route('users.index') }}" class="text-gray-400 hover:text-white text-sm transition ml-4">Users</a>
+                    <a href="{{ route('apps.index') }}" class="text-gray-400 hover:text-white text-sm transition ml-4">Apps</a>
                     <a href="{{ route('audit.index') }}" class="text-gray-400 hover:text-white text-sm transition ml-4">Audit Log</a>
                     <a href="{{ route('permissions.index') }}" class="text-gray-400 hover:text-white text-sm transition ml-4">Permissions</a>
                 @endrole
@@ -283,6 +284,7 @@
                                 @can('companies.update')
                                 <a href="{{ route('companies.edit', $company) }}" class="text-blue-400 hover:text-blue-300 text-xs transition">Edit</a>
                                 @endcan
+                                <a href="{{ route('apps.company', $company) }}" class="text-purple-400 hover:text-purple-300 text-xs transition">Apps</a>
                                 @can('companies.delete')
                                 <form method="POST" action="{{ route('companies.destroy', $company) }}">
                                     @csrf

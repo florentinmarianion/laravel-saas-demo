@@ -16,6 +16,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserPermissionController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AppController;
 
 // Public routes
 Route::get('/', fn() => redirect()->route('login'));
@@ -81,6 +82,20 @@ Route::middleware('auth')->group(function () {
         // Export
         Route::get('/export/companies', [ExportController::class, 'companies'])->name('export.companies');
         Route::get('/export/users', [ExportController::class, 'users'])->name('export.users');
+
+        // Apps management
+        Route::get('/apps', [AppController::class, 'index'])->name('apps.index');
+        Route::post('/apps', [AppController::class, 'store'])->name('apps.store');
+        Route::patch('/apps/{app}/toggle', [AppController::class, 'toggle'])->name('apps.toggle');
+        Route::delete('/apps/{app}', [AppController::class, 'destroy'])->name('apps.destroy');
+
+        // Company app assignment
+        Route::get('/companies/{company}/apps', [AppController::class, 'companyApps'])->name('apps.company');
+        Route::put('/companies/{company}/apps', [AppController::class, 'syncCompanyApps'])->name('apps.company.sync');
+
+        // User app assignment per company
+        Route::get('/users/{user}/companies/{company}/apps', [AppController::class, 'userApps'])->name('apps.user');
+        Route::put('/users/{user}/companies/{company}/apps', [AppController::class, 'syncUserApps'])->name('apps.user.sync');
     });
 
     // Permission based routes
