@@ -116,6 +116,10 @@
                         <td class="px-6 py-4 text-gray-400 text-sm">{{ $user->created_at->format('M d, Y') }}</td>
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
+                                <a href="{{ route('users.permissions', $user) }}"
+                                    class="text-purple-400 hover:text-purple-300 text-xs transition">
+                                    Permissions
+                                </a>
                                 <form method="POST" action="{{ route('users.toggle', $user) }}">
                                     @csrf
                                     @method('PATCH')

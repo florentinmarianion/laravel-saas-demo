@@ -18,9 +18,15 @@
                     </svg>
                 </div>
                 <span class="text-white font-semibold">SaaS Platform</span>
-                <a href="{{ route('users.index') }}" class="text-gray-400 hover:text-white text-sm transition ml-4">Users</a>
-                <a href="{{ route('audit.index') }}" class="text-gray-400 hover:text-white text-sm transition ml-4">Audit Log</a>
                 <span class="text-gray-600 text-sm">/ Dashboard</span>
+                @role('admin')
+                    <a href="{{ route('users.index') }}" class="text-gray-400 hover:text-white text-sm transition ml-4">Users</a>
+                    <a href="{{ route('audit.index') }}" class="text-gray-400 hover:text-white text-sm transition ml-4">Audit Log</a>
+                    <a href="{{ route('permissions.index') }}" class="text-gray-400 hover:text-white text-sm transition ml-4">Permissions</a>
+                @endrole
+                @can('currency.view')
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition ml-4">Currency Exchange</a>
+                @endcan
             </div>
             <div class="flex items-center gap-4">
                 <!-- Notification Bell -->
@@ -37,7 +43,6 @@
                         @endif
                     </a>
                 </div>
-
                 <a href="{{ route('profile.show') }}" class="text-gray-400 hover:text-white text-sm transition">
                     {{ Auth::user()->name }}
                 </a>
@@ -53,7 +58,7 @@
     </nav>
 
     <div class="max-w-6xl mx-auto px-6 py-8">
-
+        @role('admin')
         <!-- Add Company Form -->
         <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
             <h2 class="text-white font-semibold mb-4">Add Company</h2>
@@ -133,7 +138,6 @@
                 </div>
             </form>
         </div>
-
         <!-- Stats -->
         <div class="grid grid-cols-3 gap-4 mb-8">
             <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
@@ -151,17 +155,37 @@
         </div>
 
         <!-- Charts -->
-<div class="grid grid-cols-2 gap-4 mb-6">
-    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
-        <h3 class="text-white font-semibold mb-4">Companies — Last 30 Days</h3>
-        <canvas id="companiesChart" height="120"></canvas>
-    </div>
-    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
-        <h3 class="text-white font-semibold mb-4">Users — Last 30 Days</h3>
-        <canvas id="usersChart" height="120"></canvas>
-    </div>
-</div>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                <h3 class="text-white font-semibold mb-4">Companies — Last 30 Days</h3>
+                <canvas id="companiesChart" height="120"></canvas>
+            </div>
+            <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                <h3 class="text-white font-semibold mb-4">Users — Last 30 Days</h3>
+                <canvas id="usersChart" height="120"></canvas>
+            </div>
+        </div>
 
+        @endrole
+        @unlessrole('admin')
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-12 text-center">
+            <div class="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+            </div>
+            <h2 class="text-white font-semibold text-lg mb-2">Welcome, {{ Auth::user()->name }}!</h2>
+            <p class="text-gray-400 text-sm mb-6">You are logged in as <span class="text-blue-400">{{ Auth::user()->getRoleNames()->first() ?? 'member' }}</span> at <span class="text-white">{{ Auth::user()->company?->name ?? 'N/A' }}</span>.</p>
+            @can('currency.view')
+                <a href="#" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition inline-block">
+                    Go to Currency Exchange
+                </a>
+            @endcan
+            @cannot('currency.view')
+                <p class="text-gray-500 text-xs">Contact your administrator to get access to modules.</p>
+            @endcannot
+        </div>
+        @endunlessrole
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const labels = @json($dateLabels);
@@ -218,7 +242,7 @@
         options: chartOptions
     });
 </script>
-
+        @role('admin')
         <!-- Companies Table -->
         <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-800 flex items-center justify-between">
@@ -354,6 +378,7 @@
                 </tbody>
             </table>
         </div>
+        @endrole
     </div>
 </body>
 </html>
