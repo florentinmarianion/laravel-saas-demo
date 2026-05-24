@@ -5,7 +5,6 @@ A fully-featured multi-tenant SaaS admin panel built with Laravel 12 and PHP 8.5
 ## Live Demo
 
 - **Login:** `admin@demo.com` / `password`
-- **URL:** *(add your demo URL here)*
 
 ## Features
 
