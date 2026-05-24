@@ -1,0 +1,11 @@
+{
+    "name": "CurrencyExchange",
+    "alias": "currencyexchange",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CurrencyExchange\\Providers\\CurrencyExchangeServiceProvider"
+    ],
+    "files": []
+}
