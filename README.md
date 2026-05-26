@@ -54,13 +54,26 @@ A fully-featured multi-tenant SaaS admin panel built with Laravel 12 and PHP 8.5
 - Edit name and email
 - Change password with current password verification
 
+### Currency Exchange (Module)
+- Live exchange rates from Banca Națională a României (BNR)
+- Historical rates via BNR yearly XML feeds
+- From / To direction toggle with currency selector
+- Summary cards with variation badges (▲▼→) vs previous working day
+- Variation chart (daily change %) and Nominal rate chart side by side
+- Chart style toggle: Area (filled + points) or Line (thin, no fill)
+- Global chart start date filter in sidebar
+- Currency converter (any pair)
+- In-memory cache for historical fetches (~10x faster chart loading)
+- Supports 37 currencies in BNR-defined order
+
 ## Tech Stack
 
 - **Backend:** PHP 8.5 / Laravel 12
+- **Modules:** nwidart/laravel-modules
 - **Auth:** Laravel Sanctum (API) + Session (Web)
 - **Permissions:** Spatie Laravel Permission
 - **Database:** MySQL
-- **Frontend:** Blade + Tailwind CSS CDN
+- **Frontend:** Blade + Tailwind CSS CDN (core), Vue 3 + Vite (modules)
 - **Charts:** Chart.js
 - **Email:** Gmail SMTP
 
@@ -76,15 +89,27 @@ A fully-featured multi-tenant SaaS admin panel built with Laravel 12 and PHP 8.5
 | POST | /api/invitations | Yes | admin |
 | GET | /api/invitations | Yes | any |
 | POST | /api/invitations/{token}/accept | No | — |
+| GET | /currency/rates | Yes | any |
+| GET | /currency/historical?date=YYYY-MM-DD | Yes | any |
 
 ## Setup
 
 ```bash
+git clone https://github.com/florentinmarianion/laravel-saas-demo.git
+cd saas-demo
 composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate
 php artisan db:seed
+```
+
+Install and build frontend assets:
+
+```bash
+cd Modules/CurrencyExchange
+npm install
+npm run build
 ```
 
 Configure Gmail SMTP in `.env`:
