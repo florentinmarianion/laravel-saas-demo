@@ -97,22 +97,10 @@ A fully-featured multi-tenant SaaS admin panel built with Laravel 12 and PHP 8.5
 ```bash
 git clone https://github.com/florentinmarianion/laravel-saas-demo.git
 cd saas-demo
-composer install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate
-php artisan db:seed
+make install
 ```
 
-Install and build frontend assets:
-
-```bash
-cd Modules/CurrencyExchange
-npm install
-npm run build
-```
-
-Configure Gmail SMTP in `.env`:
+Configure Gmail SMTP in `.env` before running:
 
 ```env
 MAIL_MAILER=smtp
@@ -124,3 +112,13 @@ MAIL_ENCRYPTION=tls
 ```
 
 Default admin credentials: `admin@demo.com` / `password`
+
+## Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `make install` | Full setup from scratch — dependencies, DB, all frontend assets |
+| `make build` | Rebuild all frontend assets (core + modules) |
+| `make dev` | Start all dev servers (Laravel + Vite + queue + logs) |
+| `make fresh` | Wipe database and re-seed |
+| `make clear` | Clear all Laravel caches |
