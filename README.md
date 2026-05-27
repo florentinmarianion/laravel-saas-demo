@@ -94,15 +94,13 @@ A fully-featured multi-tenant SaaS admin panel built with Laravel 12 and PHP 8.5
 
 ## Setup
 
-```bash
-git clone https://github.com/florentinmarianion/laravel-saas-demo.git
-cd saas-demo
-make install
-```
-
-Configure Gmail SMTP in `.env` before running:
+Configure `.env` before running (copy from `.env.example` and fill in DB + mail):
 
 ```env
+DB_DATABASE=your_database
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
@@ -111,9 +109,25 @@ MAIL_PASSWORD=your_app_password
 MAIL_ENCRYPTION=tls
 ```
 
+**Windows CMD:**
+```bat
+git clone https://github.com/florentinmarianion/laravel-saas-demo.git
+cd saas-demo
+setup.bat
+```
+
+**Linux / Mac / Git Bash:**
+```bash
+git clone https://github.com/florentinmarianion/laravel-saas-demo.git
+cd saas-demo
+make install
+```
+
 Default admin credentials: `admin@demo.com` / `password`
 
 ## Available Commands
+
+### Linux / Mac / Git Bash
 
 | Command | Description |
 |---------|-------------|
@@ -122,3 +136,9 @@ Default admin credentials: `admin@demo.com` / `password`
 | `make dev` | Start all dev servers (Laravel + Vite + queue + logs) |
 | `make fresh` | Wipe database and re-seed |
 | `make clear` | Clear all Laravel caches |
+
+### Windows CMD
+
+| Command | Description |
+|---------|-------------|
+| `setup.bat` | Full setup from scratch — dependencies, DB, all frontend assets |
