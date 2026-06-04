@@ -21,7 +21,7 @@ class CompanySwitchController extends Controller
         }
 
         $companies = $user->companies()
-            ->where('is_active', true)
+            ->where('companies.is_active', true)
             ->withPivot('role', 'is_active')
             ->get();
 
@@ -52,7 +52,7 @@ class CompanySwitchController extends Controller
         // Verify user actually belongs to this company
         $company = $user->companies()
             ->where('companies.id', $companyId)
-            ->where('is_active', true)
+            ->where('companies.is_active', true)
             ->first();
 
         if (! $company) {

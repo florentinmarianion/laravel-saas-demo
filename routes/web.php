@@ -37,13 +37,12 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/select-company', [CompanySwitchController::class, 'select'])->name('company.select');
     Route::post('/switch-company', [CompanySwitchController::class, 'switch'])->name('company.switch');
 });
 // Authenticated routes
 Route::middleware('auth', 'active.company')->group(function () {
-
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Profile

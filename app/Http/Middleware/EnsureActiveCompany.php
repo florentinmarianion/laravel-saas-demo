@@ -24,7 +24,7 @@ class EnsureActiveCompany
         // If no active company in session, redirect to selection page
         if (! session('active_company_id')) {
             // If user belongs to exactly one company, auto-select it
-            $companies = $user->companies()->where('is_active', true)->get();
+            $companies = $user->companies()->where('companies.is_active', true)->get();
 
             if ($companies->count() === 1) {
                 session([
@@ -46,7 +46,7 @@ class EnsureActiveCompany
         // Verify the stored company still belongs to the user
         $valid = $user->companies()
             ->where('companies.id', session('active_company_id'))
-            ->where('is_active', true)
+            ->where('companies.is_active', true)
             ->exists();
 
         if (! $valid) {
