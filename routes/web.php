@@ -17,6 +17,8 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserPermissionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppController;
+use App\Http\Controllers\AppPermissionController;
+use App\Http\Controllers\CompanySwitchController;
 
 // Public routes
 Route::get('/', fn() => redirect()->route('login'));
@@ -34,8 +36,12 @@ Route::middleware('guest')->group(function () {
     Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
 
-// Authenticated routes
 Route::middleware('auth')->group(function () {
+    Route::get('/select-company', [CompanySwitchController::class, 'select'])->name('company.select');
+    Route::post('/switch-company', [CompanySwitchController::class, 'switch'])->name('company.switch');
+});
+// Authenticated routes
+Route::middleware('auth', 'active.company')->group(function () {
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -54,6 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['role:admin'])->group(function () {
 
         // Companies
+        Route::get('/companies', [CompanyController::class, 'index'])->name('companies.index');
         Route::post('/companies', [CompanyController::class, 'store'])->name('companies.store');
         Route::get('/companies/{company}/edit', [CompanyController::class, 'edit'])->name('companies.edit');
         Route::put('/companies/{company}', [CompanyController::class, 'update'])->name('companies.update');
@@ -64,6 +71,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::patch('/users/{user}/toggle', [UserController::class, 'toggle'])->name('users.toggle');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::get('/users/{user}/companies', [CompanyUserController::class, 'userCompanies'])->name('user.companies');
         Route::get('/users/{user}/permissions', [UserPermissionController::class, 'show'])->name('users.permissions');
         Route::put('/users/{user}/permissions', [UserPermissionController::class, 'update'])->name('users.permissions.update');
 
@@ -96,10 +104,10 @@ Route::middleware('auth')->group(function () {
         // User app assignment per company
         Route::get('/users/{user}/companies/{company}/apps', [AppController::class, 'userApps'])->name('apps.user');
         Route::put('/users/{user}/companies/{company}/apps', [AppController::class, 'syncUserApps'])->name('apps.user.sync');
+
+        // User permissions per app+company
+        Route::get('/users/{user}/companies/{company}/apps/{app}/permissions', [AppPermissionController::class, 'show'])->name('app.permissions.show');
+        Route::put('/users/{user}/companies/{company}/apps/{app}/permissions', [AppPermissionController::class, 'update'])->name('app.permissions.update');
     });
 
-    // Permission based routes
-    Route::middleware(['permission:currency.view'])->group(function () {
-        // Route::get('/currency', [CurrencyController::class, 'index'])->name('currency.index');
-    });
 });

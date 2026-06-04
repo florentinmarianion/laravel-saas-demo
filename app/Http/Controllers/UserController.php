@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::with(['company', 'roles'])->latest();
+        $query = User::with(['companies', 'roles'])->latest();
 
         if ($request->filled('company_id')) {
             $query->where('company_id', $request->company_id);
@@ -25,7 +25,7 @@ class UserController extends Controller
         }
 
         $users     = $query->paginate(20);
-        $companies = Company::orderBy('name')->get();
+        $companies = Company::orderBy('name', 'asc')->get();
 
         return view('users.index', compact('users', 'companies'));
     }

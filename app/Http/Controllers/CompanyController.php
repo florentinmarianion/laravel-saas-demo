@@ -8,6 +8,12 @@ use Illuminate\Support\Str;
 use App\Models\AuditLog;
 class CompanyController extends Controller
 {
+    public function index()
+    {
+        $companies = Company::with(['users', 'apps'])->latest()->get();
+        return view('companies.index', compact('companies'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -22,7 +28,7 @@ class CompanyController extends Controller
         ]);
 
         AuditLog::record('company.created', $company, ['name' => $company->name]);
-        return redirect()->route('dashboard')->with('success', 'Company created successfully.');
+        return redirect()->route('companies.index')->with('success', 'Company created successfully.');
     }
 
     public function destroy(Company $company)
@@ -30,7 +36,7 @@ class CompanyController extends Controller
         AuditLog::record('company.deleted', $company, ['name' => $company->name]);
         $company->delete();
 
-        return redirect()->route('dashboard')->with('success', 'Company deleted successfully.');
+        return redirect()->route('companies.index')->with('success', 'Company deleted successfully.');
     }
 
     public function edit(Company $company)
@@ -54,6 +60,6 @@ class CompanyController extends Controller
         ]);
 
         AuditLog::record('company.updated', $company, ['name' => $company->name]);
-        return redirect()->route('dashboard')->with('success', 'Company updated successfully.');
+        return redirect()->route('companies.index')->with('success', 'Company updated successfully.');
     }
 }

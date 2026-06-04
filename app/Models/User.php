@@ -37,6 +37,96 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+    * All granular permissions of the user on a specific company+app.
+    */
+    public function appPermissions(): HasMany
+    {
+        return $this->hasMany(AppUserPermission::class);
+    }
+
+    /**
+    * Checks if the user has a specific permission in an app+company.
+    *
+    * Admins bypass automatically via Gate::before in AppServiceProvider.
+    *
+    * Usage examples:
+    * $user->hasAppPermission('currency-exchange', 'view', $companyId)
+    * $user->hasAppPermission('accounting', 'invoices.approve', $companyId)
+    */
+    public function hasAppPermission(string $appSlug, string $permissionKey, int $companyId): bool
+    {
+        $app = \App\Models\App::where('slug', $appSlug)->first();
+
+        if (! $app) {
+            return false;
+        }
+
+        // First check that the user has access to the app in that company
+        $hasAccess = $this->apps()
+            ->wherePivot('company_id', $companyId)
+            ->where('apps.id', $app->id)
+            ->exists();
+
+        if (! $hasAccess) {
+            return false;
+        }
+
+        return AppUserPermission::where('user_id', $this->id)
+            ->where('company_id', $companyId)
+            ->where('app_id', $app->id)
+            ->where('permission_key', $permissionKey)
+            ->where('granted', true)
+            ->exists();
+    }
+
+    /**
+    * Returns all granted permissions of the user for an app+company.
+    * Useful for displaying them in the UI or sending them to the frontend.
+    */
+    public function getAppPermissions(string $appSlug, int $companyId): array
+    {
+        $app = \App\Models\App::where('slug', $appSlug)->first();
+
+        if (! $app) {
+            return [];
+        }
+
+        return AppUserPermission::where('user_id', $this->id)
+            ->where('company_id', $companyId)
+            ->where('app_id', $app->id)
+            ->where('granted', true)
+            ->pluck('permission_key')
+            ->toArray();
+    }
+
+    /**
+    * Syncs a user's permissions for an app+company.
+    * Used from AppPermissionController or when accepting an invitation.
+    *
+    * $permissions = ['view', 'create', 'invoices.approve']
+    */
+    public function syncAppPermissions(int $appId, int $companyId, array $permissions): void
+    {
+        // Delete all existing permissions for this context
+        AppUserPermission::where('user_id', $this->id)
+            ->where('company_id', $companyId)
+            ->where('app_id', $appId)
+            ->delete();
+
+        // Adaugă cele noi
+        foreach ($permissions as $permissionKey) {
+            AppUserPermission::create([
+                'user_id'        => $this->id,
+                'company_id'     => $companyId,
+                'app_id'         => $appId,
+                'permission_key' => $permissionKey,
+                'granted'        => true,
+            ]);
+        }
+    }
+
+
     // Legacy: single company (backward compatibility)
     public function company(): BelongsTo
     {

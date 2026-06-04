@@ -42,7 +42,7 @@ class ExportController extends Controller
 
     public function users()
     {
-        $users = User::with(['company', 'roles'])->get();
+        $users = User::with(['companies', 'roles'])->get();
 
         $headers = [
             'Content-Type'        => 'text/csv',
@@ -59,7 +59,7 @@ class ExportController extends Controller
                     $user->id,
                     $user->name,
                     $user->email,
-                    $user->company?->name ?? '—',
+                    $user->companies->pluck('name')->join(', ') ?: '—',
                     $user->roles->first()?->name ?? 'no role',
                     $user->is_active ? 'Yes' : 'No',
                     $user->created_at->format('Y-m-d H:i'),

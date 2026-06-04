@@ -1,24 +1,55 @@
-*.log
-.DS_Store
-.env
-.env.backup
-.env.production
-.phpactor.json
-.phpunit.result.cache
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
-/auth.json
-/node_modules
-/public/build
+# Laravel
+/vendor/
+/node_modules/
 /public/hot
 /public/storage
 /storage/*.key
-/storage/pail
-/vendor
-Homestead.json
-Homestead.yaml
+/storage/app/public/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/logs/*
+!storage/framework/cache/.gitkeep
+!storage/framework/sessions/.gitkeep
+!storage/framework/testing/.gitkeep
+!storage/framework/views/.gitkeep
+!storage/logs/.gitkeep
+
+# Environment
+.env
+.env.backup
+.env.production
+.env.staging
+
+
+# Build assets
+/public/build/
+/public/hot
+
+# Modules - node_modules & builds
+/Modules/*/node_modules/
+/Modules/*/public/
+/public/modules/
+
+# IDE
+/.idea/
+/.vscode/
+/.fleet/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
 Thumbs.db
+
+# PHP
+.phpunit.result.cache
+.phpunit.cache/
+phpunit.xml.bak
+
+# Generated files
+structure.txt
+tree.txt
+*.log
+
+# Windows
+desktop.ini

@@ -76,7 +76,7 @@ class AppController extends Controller
     // Show user app assignment page per company
     public function userApps(User $user, Company $company)
     {
-        $companyApps   = $company->apps()->where('is_active', true)->get();
+        $companyApps   = $company->apps()->where('apps.is_active', true)->get();
         $userAppIds    = $user->apps()->wherePivot('company_id', $company->id)->pluck('apps.id')->toArray();
 
         return view('apps.user', compact('user', 'company', 'companyApps', 'userAppIds'));
