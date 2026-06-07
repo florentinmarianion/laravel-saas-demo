@@ -63,7 +63,7 @@
                                 </svg>
                                 All Users
                             </a>
-                            <a href="{{ route('users.index') }}#invite"
+                            <a href="{{ route('dashboard') }}#invite"
                                 class="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800 transition">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
@@ -165,6 +165,54 @@
                     </div>
 
                     @endrole
+
+                    {{-- Member: accessible apps dropdown --}}
+                    @unlessrole('admin')
+                    @php
+                        $accessibleApps = \App\Services\AppContext::accessibleApps();
+                        $appRouteMap = ['currency-exchange' => 'currency.index'];
+                        $dotColors = ['blue'=>'bg-blue-400','green'=>'bg-green-400','yellow'=>'bg-yellow-400','purple'=>'bg-purple-400','pink'=>'bg-pink-400','red'=>'bg-red-400','orange'=>'bg-orange-400'];
+                        $textColors = ['blue'=>'text-blue-400','green'=>'text-green-400','yellow'=>'text-yellow-400','purple'=>'text-purple-400','pink'=>'text-pink-400','red'=>'text-red-400','orange'=>'text-orange-400'];
+                    @endphp
+                    @if($accessibleApps->isNotEmpty())
+                    <div x-data="{ open: false }" class="relative">
+                        <button @click="open = !open" @keydown.escape="open = false"
+                            class="flex items-center gap-1 px-3 py-1.5 rounded-md text-sm transition
+                                text-gray-400 hover:text-white hover:bg-gray-800">
+                            Apps
+                            <svg class="w-3.5 h-3.5 transition-transform" :class="open && 'rotate-180'"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div x-show="open" @click.outside="open = false" x-transition
+                            class="absolute top-full left-0 mt-1 w-56 bg-gray-900 border border-gray-700 rounded-xl shadow-xl py-1 z-50">
+                            @foreach($accessibleApps as $appItem)
+                            @php
+                                $appRoute = $appRouteMap[$appItem->slug] ?? null;
+                                $dot = $dotColors[$appItem->color] ?? 'bg-blue-400';
+                                $tc  = $textColors[$appItem->color] ?? 'text-blue-400';
+                            @endphp
+                            @if($appRoute && \Illuminate\Support\Facades\Route::has($appRoute))
+                                <a href="{{ route($appRoute) }}"
+                                    class="flex items-center gap-3 px-4 py-2 text-sm hover:bg-gray-800 transition
+                                        {{ request()->routeIs(explode('.', $appRoute)[0].'.*') ? 'text-white bg-gray-800' : 'text-gray-300 hover:text-white' }}">
+                                    <span class="w-2 h-2 rounded-full {{ $dot }} flex-shrink-0"></span>
+                                    {{ $appItem->name }}
+                                </a>
+                            @else
+                                <span class="flex items-center gap-3 px-4 py-2 text-sm text-gray-600 cursor-not-allowed">
+                                    <span class="w-2 h-2 rounded-full bg-gray-700 flex-shrink-0"></span>
+                                    {{ $appItem->name }}
+                                    <span class="ml-auto text-xs text-gray-700">soon</span>
+                                </span>
+                            @endif
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+                    @endunlessrole
+
                 </div>
             </div>
 
@@ -328,6 +376,21 @@
                 Audit Log
             </a>
             @endrole
+            {{-- Member: accessible apps --}}
+            @unlessrole('admin')
+            @foreach(\App\Services\AppContext::accessibleApps() as $appItem)
+            @php
+                $appRouteMap = ['currency-exchange' => 'currency.index'];
+                $appRoute = $appRouteMap[$appItem->slug] ?? null;
+            @endphp
+            @if($appRoute && \Illuminate\Support\Facades\Route::has($appRoute))
+            <a href="{{ route($appRoute) }}"
+                class="block px-3 py-2 rounded-md text-sm text-gray-300 hover:text-white hover:bg-gray-800 transition">
+                {{ $appItem->name }}
+            </a>
+            @endif
+            @endforeach
+            @endunlessrole
             <a href="{{ route('profile.show') }}"
                 class="block px-3 py-2 rounded-md text-sm text-gray-300 hover:text-white hover:bg-gray-800 transition">
                 Profile

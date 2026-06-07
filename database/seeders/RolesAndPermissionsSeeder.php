@@ -12,28 +12,41 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Granular CRUD permissions
         $permissions = [
-            // Companies
+            // ── Companies ──────────────────────────────────────────────────────
             'companies.create',
             'companies.read',
             'companies.update',
             'companies.delete',
 
-            // Users
+            // ── Users ──────────────────────────────────────────────────────────
             'users.create',
             'users.read',
             'users.update',
             'users.delete',
 
-            // Invitations
+            // ── Invitations ────────────────────────────────────────────────────
             'invitations.create',
             'invitations.delete',
 
-            // Audit
+            // ── Apps ───────────────────────────────────────────────────────────
+            'apps.create',
+            'apps.read',
+            'apps.update',
+            'apps.delete',
+            'apps.assign',
+
+            // ── Permissions ────────────────────────────────────────────────────
+            'permissions.create',
+            'permissions.read',
+            'permissions.update',
+            'permissions.delete',
+            'permissions.assign',
+
+            // ── Audit ──────────────────────────────────────────────────────────
             'audit.read',
 
-            // Currency Exchange
+            // ── Currency Exchange ──────────────────────────────────────────────
             'currency.view',
             'currency.export',
         ];
@@ -42,7 +55,6 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // Create roles
         Role::firstOrCreate(['name' => 'admin']);
         Role::firstOrCreate(['name' => 'member']);
     }

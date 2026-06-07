@@ -51,9 +51,13 @@
         <h3 class="text-white font-semibold mb-0.5">{{ $app->name }}</h3>
         <p class="text-gray-500 text-xs mb-3">{{ $app->description }}</p>
         <p class="text-gray-600 text-xs mb-4">
-            <a href="{{ route('apps.company', ['company' => $app->companies->first()]) }}" class="hover:text-gray-400 transition">
+            @if($app->companies_count > 0)
+            <a href="{{ route('companies.index') }}" class="hover:text-gray-400 transition">
                 {{ $app->companies_count }} {{ Str::plural('company', $app->companies_count) }}
             </a>
+            @else
+            <span>0 companies</span>
+            @endif
         </p>
         <div class="flex items-center gap-3 pt-3 border-t border-gray-800">
             <form method="POST" action="{{ route('apps.toggle', $app) }}">

@@ -14,7 +14,7 @@ class InvitationController extends Controller
     public function send(Request $request)
     {
         $validated = $request->validate([
-            'email'      => 'required|email|unique:users,email',
+            'email' => 'required|email',
             'company_id' => 'required|exists:companies,id',
             'role'       => 'required|in:admin,member',
         ]);

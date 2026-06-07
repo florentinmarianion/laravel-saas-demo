@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\App;
 use App\Models\Company;
 use App\Models\User;
@@ -87,14 +88,24 @@ class AppController extends Controller
     {
         $appIds = $request->input('app_ids', []);
 
-        // Remove existing entries for this user+company
-        $user->apps()->wherePivot('company_id', $company->id)->detach();
+        // Șterge toate înregistrările existente pentru user+company
+        DB::table('app_user_company')
+            ->where('user_id', $user->id)
+            ->where('company_id', $company->id)
+            ->delete();
 
-        // Attach new ones
+        // Adaugă cele bifate
         foreach ($appIds as $appId) {
-            $user->apps()->attach($appId, ['company_id' => $company->id]);
+            DB::table('app_user_company')->insert([
+                'user_id'    => $user->id,
+                'company_id' => $company->id,
+                'app_id'     => (int) $appId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
 
-        return redirect()->route('apps.user', [$user, $company])->with('success', 'Apps updated for ' . $user->name);
+        return redirect()->route('apps.user', [$user, $company])
+            ->with('success', 'Apps updated for ' . $user->name);
     }
 }
